@@ -29,3 +29,11 @@ def show_detail(
     age : int = Query(ge=0)
     ):
     return {name : age}
+
+#Path Parametes Validation
+@app.post("/person/detail")
+def show_detail(
+    name : Optional[str] = Query(None,min_length=1,max_length=50,title="Nombre de las persona",description="ingresa tu nombre mi compa"),
+    age : int = Query(ge=0)
+    ):
+    return {name : age}
