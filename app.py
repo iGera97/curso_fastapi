@@ -1,6 +1,6 @@
 from typing import Optional
 from pydantic import BaseModel
-from fastapi import FastAPI, Body, Query
+from fastapi import FastAPI, Body, Path, Query
 
 app = FastAPI()
 
@@ -29,3 +29,9 @@ def show_detail(
     age : int = Query(ge=0)
     ):
     return {name : age}
+
+@app.post("/person/detail/{person_id}")
+def show_detail(
+    person_id : int = Path(None,gt=0,title="id de la persona",description="ingresa el id mi compa")
+    ):
+    return {"id" : person_id}
