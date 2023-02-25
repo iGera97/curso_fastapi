@@ -2,6 +2,7 @@ from typing import Optional
 from enum import Enum
 from pydantic import BaseModel,Field,SecretStr
 from fastapi import FastAPI, Body, Path, Query
+from fastapi import status
 
 app = FastAPI()
 
@@ -51,17 +52,17 @@ class Location(BaseModel):
         }
 
 #Path Operation
-@app.get("/")#Path Operaion decorator
+@app.get("/",status_code=status.HTTP_200_OK)#Path Operaion decorator
 def home():#Path operation function
     return {"Hello" : "World"}
 
 #Request and response body
-@app.post("/person/new",response_model=PersonOut)
+@app.post("/person/new",response_model=PersonOut,status_code=status.HTTP_201_CREATED)
 def create_person(person : Person = Body()):
     return person
 
 #Query Validation
-@app.get("/person/detail")
+@app.get("/person/detail",status_code=status.HTTP_200_OK)
 def show_detail(
     name : Optional[str] = Query(None,
                                 min_length=1,
@@ -74,7 +75,7 @@ def show_detail(
     return {name : age}
 
 #Path Validation
-@app.get("/person/detail/{person_id}")
+@app.get("/person/detail/{person_id}",status_code=status.HTTP_200_OK)
 def show_detail(
     person_id : int = Path(gt=0
                            ,title="id de la persona"
@@ -84,7 +85,7 @@ def show_detail(
     return {"id" : person_id}
 
 #Request Body
-@app.put("/person/{person_id}")
+@app.put("/person/{person_id}",status_code=status.HTTP_200_OK)
 def update_person(
     person_id : int = Path(gt=0,
                             title="id de la persona",
