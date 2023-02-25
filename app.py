@@ -56,25 +56,33 @@ def create_person(person : Person = Body()):
 #Query Validation
 @app.get("/person/detail")
 def show_detail(
-    name : Optional[str] = Query(None,min_length=1,max_length=50,title="Nombre de las persona",description="ingresa tu nombre mi compa"),
-    age : int = Query(ge=0)
+    name : Optional[str] = Query(None,
+                                min_length=1,
+                                max_length=50,
+                                title="Nombre de las persona",
+                                description="ingresa tu nombre mi compa",
+                                example="Pedrito"),
+    age : int = Query(ge=0,example=50)
     ):
     return {name : age}
 
 #Path Validation
 @app.get("/person/detail/{person_id}")
 def show_detail(
-    person_id : int = Path(gt=0,title="id de la persona",description="ingresa el id mi compa")
+    person_id : int = Path(gt=0
+                           ,title="id de la persona"
+                           ,description="ingresa el id mi compa"
+                           ,example=234)
     ):
     return {"id" : person_id}
 
 #Request Body
 @app.put("/person/{person_id}")
 def update_person(
-    person_id : int = Path(
-        gt=0,
-        title="id de la persona",
-        description="ingresa el id mi compa"),
+    person_id : int = Path(gt=0,
+                            title="id de la persona",
+                            description="ingresa el id mi compa",
+                            example=22),
     person : Person = Body(),
     location : Location = Body()
     ):
