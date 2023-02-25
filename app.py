@@ -18,11 +18,30 @@ class Person(BaseModel):
     age : int = Field(gt=0,le=115)
     hair_color : Optional[HairColor] = Field(None)
     is_married : Optional[bool] = Field(None)
+    class Config:
+        schema_extra = {
+            "example" : {
+                "first_name" : "Fulano",
+                "last_name" : "Pérez",
+                "age" : "40",
+                "hair_color" : "black",
+                "is_married" : True
+            }
+        }
 
 class Location(BaseModel):
     city : str
     state : str
     country : str
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "city": "Oaxaca de Juarez",
+                "state": "Oaxaca",
+                "country": "Mexico",
+        }
+        }
 
 #Path Operation
 @app.get("/")#Path Operaion decorator
