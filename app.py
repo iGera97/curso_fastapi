@@ -1,6 +1,6 @@
 from typing import Optional
 from enum import Enum
-from pydantic import BaseModel,Field
+from pydantic import BaseModel,Field,SecretStr
 from fastapi import FastAPI, Body, Path, Query
 
 app = FastAPI()
@@ -12,22 +12,29 @@ class HairColor(Enum):
     black = "black"
     blond = "blond"
 
-class Person(BaseModel):
-    first_name : str = Field(min_length=1,max_length=50)
-    last_name : str = Field(min_length=1,max_length=50)
-    age : int = Field(gt=0,le=115)
-    hair_color : Optional[HairColor] = Field(None)
-    is_married : Optional[bool] = Field(None)
-    class Config:
+class PersonBase(BaseModel):
+    first_name : str = Field(min_length=1,max_length=50,example="Paquito")
+    last_name : str = Field(min_length=1,max_length=50,example="Perez")
+    age : int = Field(gt=0,le=115,example=12)
+    hair_color : Optional[HairColor] = Field(None,example="brown")
+    is_married : Optional[bool] = Field(None,example=True)
+    """class Config:
         schema_extra = {
             "example" : {
                 "first_name" : "Fulano",
                 "last_name" : "Pérez",
                 "age" : "40",
                 "hair_color" : "black",
-                "is_married" : True
+                "is_married" : True,
+                "password" : "84bbfu4bdsjkd"
             }
-        }
+        }"""
+
+class Person(PersonBase):
+    password : SecretStr = Field(min_length=10,max_length=30,example="84bbfu4bdsjkd")
+
+class PersonOut(PersonBase):
+    pass
 
 class Location(BaseModel):
     city : str
@@ -49,7 +56,7 @@ def home():#Path operation function
     return {"Hello" : "World"}
 
 #Request and response body
-@app.post("/person/new")
+@app.post("/person/new",response_model=PersonOut)
 def create_person(person : Person = Body()):
     return person
 
