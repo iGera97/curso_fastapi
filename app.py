@@ -1,7 +1,7 @@
 from typing import Optional
 from enum import Enum
-from pydantic import BaseModel,Field,SecretStr
-from fastapi import FastAPI, Body, Form, Path, Query
+from pydantic import BaseModel,Field,SecretStr,EmailStr
+from fastapi import Cookie, FastAPI, Body, Form, Header, Path, Query
 from fastapi import status
 
 app = FastAPI()
@@ -107,3 +107,13 @@ def update_person(
 def login(username : str = Form(max_length=20,min_length=5),
           password : SecretStr = Form(min_length=10,max_length=30)):
     return LoginOut(username=username)
+
+#Cookies and headres parameters
+@app.post(path="/contact",status_code=status.HTTP_200_OK)
+def contact(first_name : str = Form(max_length=20,min_length=5,example="Pedrito"),
+            last_name : str = Form(max_length=20,min_length=5,example="Lopez"),
+            email : EmailStr = Form(example="admin@next.com.mx"),
+            message : str = Form(min_length=20,example="mi mensaje de prueba es este"),
+            user_agent : Optional[str] = Header(default=None),
+            ads : Optional[str] = Cookie(default = None)):
+    return user_agent
